@@ -25,18 +25,20 @@ declare(strict_types=1);
 
 namespace OCA\FilesAutomatedTagging\Listener;
 
+// require_once __DIR__ . '/../Operation.php';
+
 use OCA\FilesAutomatedTagging\AppInfo\Application;
 use OCA\FilesAutomatedTagging\Operation;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Util;
 use OCP\WorkflowEngine\Events\RegisterOperationsEvent;
-use Psr\Container\ContainerInterface;
+use OCP\AppFramework\IAppContainer;
 
 class RegisterFlowOperationsListener implements IEventListener {
-	private ContainerInterface $container;
+	private IAppContainer $container;
 
-	public function __construct(ContainerInterface $container) {
+	public function __construct(IAppContainer $container) {
 		$this->container = $container;
 	}
 
@@ -44,7 +46,7 @@ class RegisterFlowOperationsListener implements IEventListener {
 		if (!$event instanceof RegisterOperationsEvent) {
 			return;
 		}
-		$operation = $this->container->get(Operation::class);
+		$operation = $this->container->get(\OCA\FilesAutomatedTagging\Operation::class);
 		$event->registerOperation($operation);
 		Util::addScript(Application::APPID, 'files_automatedtagging-main');
 	}
